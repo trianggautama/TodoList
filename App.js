@@ -1,112 +1,73 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, { Component } from 'react'
+import {View,Text,StatusBar,FlatList,TextInput,TouchableOpacity} from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      todo      :'',
+      todoData  : [
+        {title:'pergi ke pasar',status:'selesai'},
+        {title:'mengerjakan tugas',status:'belum selesai'},
+        {title:'makan siang',status:'selesai'},
+        {title:'membersihkan halaman',status:'belum selesai'}
+      ]
+     };
+  }
+  check = (item,index) => {
+    let allData = this.state.todoData;
+    let editItem    = item;
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+    if(editItem.status == 'selesai') {
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+      editItem.status = 'belum selesai';
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+    }else{
+      editItem.status = 'selesai';
+    }
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+    allData[index].status = editItem.status;
+    this.setState({
+      todoData :allData
+    })
+  }
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+  render() {
+    return (
+      <View style={{flex:1,backgroundColor:'#212121'}}>
+        <StatusBar barStyle='light-content' backgroundColor="#272727"/>
+        <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'#303030',paddingVertical:15,elevation:3,marginBottom:20}}>
+          <Text style={{color:'#fafafa',fontWeight:'bold'}}>Todo list</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+      
+        <FlatList
+          data={this.state.todoData}
+          renderItem={({item,index}) => (
+            <View style={{justifyContent:'center', backgroundColor:'#303030',marginHorizontal:20,paddingVertical:10 ,paddingHorizontal:10,borderRadius:5,elevation:3,marginTop:10,flexDirection:'row'}}>
+              <View style={{flex:1}}>
+                <Text style={{color:'#ffffff'}}>{item.title}</Text>
+              </View>
+              <TouchableOpacity style={{justifyContent:'center'}}>
+                <Icon name={'trash-alt'} size={25} color="#fafafa" />
+              </TouchableOpacity>
+              <TouchableOpacity style={{justifyContent:'center',marginLeft:20}} onPress={()=> this.check(item,index)}>
+                <Icon name={item.status == 'selesai' ? 'check-square' : 'square'} size={25} color="#fafafa" />
+              </TouchableOpacity>
+            </View>
+          )}
+          keyExtractor={(item) => item.title}
+          />
+        <TextInput 
+          value={this.state.todo} 
+          onChangeText={(text) => this.setState({todo: text})}
+          style={{backgroundColor:'#303030', paddingHorizontal:10,marginHorizontal:20,color:'#ffffff',marginBottom:20}}
+          placeholder="add new task .."
+          placeholderTextColor="grey" 
+        />
+      </View>
+    );
+  }
+}
 
 export default App;
