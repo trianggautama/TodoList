@@ -33,6 +33,11 @@ class App extends Component {
     })
   }
 
+  delete = (index) => {
+    let allData = this.state.todoData;
+    allData.splice(index,1);
+    this.setState({todoData:allData})
+  }
   render() {
     return (
       <View style={{flex:1,backgroundColor:'#212121'}}>
@@ -48,7 +53,7 @@ class App extends Component {
               <View style={{flex:1}}>
                 <Text style={{color:'#ffffff'}}>{item.title}</Text>
               </View>
-              <TouchableOpacity style={{justifyContent:'center'}}>
+              <TouchableOpacity style={{justifyContent:'center'}} onPress={ () => this.delete(index)}>
                 <Icon name={'trash-alt'} size={25} color="#fafafa" />
               </TouchableOpacity>
               <TouchableOpacity style={{justifyContent:'center',marginLeft:20}} onPress={()=> this.check(item,index)}>
